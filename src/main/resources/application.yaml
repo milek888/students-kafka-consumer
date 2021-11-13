@@ -1,0 +1,32 @@
+server:
+  port: 8082
+
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        max_fetch_depth: 5
+        format_sql: true
+        batch_versioned_data: true
+        jdbc:
+          batch_size: 5
+          order_inserts: true
+          order_updates: true
+          generate_statistics: true
+          cache:
+            use_second_level_cache: false
+  datasource:
+    url: jdbc:postgresql://localhost/lead_management
+    user: lead_management
+    password: test
+
+  kafka:
+    bootstrap-servers: localhost:29092
+
+#  kafka:
+#    consumer:
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      auto-offset-reset: latest
+#      bootstrap-servers: localhost:29092
