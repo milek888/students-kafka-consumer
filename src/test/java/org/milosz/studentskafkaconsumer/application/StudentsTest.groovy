@@ -17,6 +17,7 @@ import org.springframework.kafka.listener.MessageListenerContainer
 import org.springframework.kafka.test.utils.ContainerTestUtils
 import org.springframework.kafka.test.utils.KafkaTestUtils
 import org.springframework.test.context.TestPropertySource
+import org.milosz.studentskafkaconsumer.infrastructure.KafkaConfig;
 
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -29,7 +30,7 @@ import static org.mockito.Mockito.verify;
 // tutaj nie potrafi pobrac do KafkaProperties customer.bootstrap i producer
 //@SpringBootTest(classes = [KafkaProperties.class, /*KafkaAutoConfiguration.class,*/ StudentEventListener.class, Students.class, KafkaTestConfig.class])
 
-@SpringBootTest(classes = [/*KafkaProperties.class,*/ KafkaAutoConfiguration.class, StudentEventListener.class, Students.class/*, KafkaTestConfig.class*/])
+@SpringBootTest(classes = [KafkaConfig.class,/*KafkaProperties.class,*/ KafkaAutoConfiguration.class, StudentEventListener.class, Students.class/*, KafkaTestConfig.class*/])
 /*@TestPropertySource(properties = {"spring.kafka.consumer.bootstrap-servers=${spring.embedded.kafka.brokers}"})
         properties = {
             "spring.kafka.consumer.concurrency=1",

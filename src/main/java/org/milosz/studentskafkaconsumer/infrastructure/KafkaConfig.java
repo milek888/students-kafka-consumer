@@ -32,17 +32,17 @@ import static java.lang.String.format;
 @RequiredArgsConstructor
 public class KafkaConfig {
 
-/*    private final KafkaProperties kafkaProperties;*/
+    private final KafkaProperties kafkaProperties;
 
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
-        Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:29092");
-        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "group_id4");
-        configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        configProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
-        return new DefaultKafkaConsumerFactory<>(configProps);
+/*        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:29092");  <------ TO POTRZEBUJEMY KONIECZNIE zeby mogl odczytac z propertiesow w yaml to musimy uzyc KafkaProperties kafkaProperties
+        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "group_id4"); <------ tego nie potrzebujemy koniecznie
+        configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);  <------ to sobie zazwyczaj w osobnym @Bean ustawiamy
+        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class); <------ to sobie zazwyczaj w osobnym @Bean ustawiamy
+        configProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");*/
+        return new DefaultKafkaConsumerFactory<>(kafkaProperties.buildConsumerProperties());
     }
 
     @Bean
