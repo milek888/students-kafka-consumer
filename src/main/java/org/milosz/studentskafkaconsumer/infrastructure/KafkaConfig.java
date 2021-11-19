@@ -1,4 +1,4 @@
-package org.milosz.studentskafkaconsumer.model;
+package org.milosz.studentskafkaconsumer.infrastructure;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.TopicPartition;
@@ -32,7 +32,7 @@ import static java.lang.String.format;
 @RequiredArgsConstructor
 public class KafkaConfig {
 
-    private final KafkaProperties kafkaProperties;
+/*    private final KafkaProperties kafkaProperties;*/
 
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
@@ -46,15 +46,6 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, String> kafkaTemplate() {
-        DefaultKafkaProducerFactory<String, String> producerFactory = new DefaultKafkaProducerFactory<>(kafkaProperties.buildProducerProperties());
-        return new KafkaTemplate<>(producerFactory);
-    }
-
-/*    @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;*/
-
-    @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(KafkaTemplate<String, String> kafkaTemplate) {
         ConcurrentKafkaListenerContainerFactory<String, String> listenerContainerFactory = new ConcurrentKafkaListenerContainerFactory<>();
         listenerContainerFactory.setConsumerFactory(consumerFactory());
@@ -64,6 +55,14 @@ public class KafkaConfig {
         return listenerContainerFactory;
     }
 
+/*    @Bean
+    public KafkaTemplate<String, String> kafkaTemplate() {
+        DefaultKafkaProducerFactory<String, String> producerFactory = new DefaultKafkaProducerFactory<>(kafkaProperties.buildProducerProperties());
+        return new KafkaTemplate<>(producerFactory);
+    }*/
+
+    /*    @Autowired
+        private KafkaTemplate<String, String> kafkaTemplate;*/
 
     @Bean
     public DeadLetterPublishingRecoverer deadLetterPublishingRecoverer(KafkaTemplate<?, ?> kafkaTemplate) {
