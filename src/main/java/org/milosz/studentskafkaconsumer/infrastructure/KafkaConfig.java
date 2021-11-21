@@ -51,10 +51,12 @@ public class KafkaConfig {
     }
 
     // @Bean(name = "greetingKafkaListenerContainerFactory")
-    @Bean(name = "kafkaListenerContainerFactory")   // <------ dzieki tej nazwie wezmie to factory a nie factory z Autoconfigu bo w KafkaAutoConfiguration -> @Import -> KafkaAnnotationDrivenConfiguration mamy
+    @Bean/*(name = "kafkaListenerContainerFactory") */  // <------ dzieki tej nazwie wezmie to factory a nie factory z Autoconfigu bo w KafkaAutoConfiguration -> @Import -> KafkaAnnotationDrivenConfiguration mamy
     //@ConditionalOnMissingBean(name = "kafkaListenerContainerFactory")
     //	ConcurrentKafkaListenerContainerFactory<?, ?> kafkaListenerContainerFactory(
     //w przeciwnym razie wezmie wlasnie z deafolta factory
+    //Zamiast nazwy mozna tez nazwac metode beana odpowiednio: public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(KafkaTemplate<String, String> kafkaTemplate) {
+    // bo Spring uzywa metody beana jako nazwy wiec tez zadziala
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(KafkaTemplate<String, String> kafkaTemplate) {
         ConcurrentKafkaListenerContainerFactory<String, String> listenerContainerFactory = new ConcurrentKafkaListenerContainerFactory<>();
         listenerContainerFactory.setConsumerFactory(consumerFactory());
