@@ -9,10 +9,12 @@ import org.springframework.boot.autoconfigure.kafka.KafkaProperties
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.context.ApplicationContext
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry
 import org.springframework.kafka.core.ConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
 import org.springframework.kafka.listener.MessageListenerContainer
 import org.springframework.kafka.test.utils.ContainerTestUtils
 import org.springframework.kafka.test.utils.KafkaTestUtils
@@ -52,9 +54,13 @@ class StudentsTest extends KafkaTestContainer {
     @Autowired
     KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry;
 
+    @Autowired
+    ConcurrentKafkaListenerContainerFactory<String, String> concurrentKafkaListenerContainerFactory;
+
     Consumer<String, String> kafkaConsumer;
 
-/*    @SpyBean*/@Autowired
+/*    @SpyBean*/
+    @Autowired
     StudentEventListener eventListener;
 
     @SpyBean
@@ -63,21 +69,30 @@ class StudentsTest extends KafkaTestContainer {
     def 'should get looker cookbook'() {
         given:
 
-            for(MessageListenerContainer messageListenerContainer :kafkaListenerEndpointRegistry.allListenerContainers) {
+            for (MessageListenerContainer messageListenerContainer : kafkaListenerEndpointRegistry.allListenerContainers) {
                 ContainerTestUtils.waitForAssignment(messageListenerContainer, 1);
-            }
+            } // <------ to jest potrzebne zeby test zadzialal
             String test = 'sssss'
-            Arrays.stream(applicationContext.getBeanDefinitionNames()).forEach(System.out::println)
+            //Arrays.stream(applicationContext.getBeanDefinitionNames()).forEach(System.out::println)
         when:
 /*            Map<String, Object> consumerProps = new HashMap<>(KafkaTestUtils.);
             kafkaConsumer = new DefaultKafkaConsumerFactory(consumerProps);*/
-         /*   Consumer kafkaConsumer = consumerFactory.createConsumer();*/
+            /*   Consumer kafkaConsumer = consumerFactory.createConsumer();*/
+
+            ConcurrentMessageListenerContainer concurrentMessageListenerContainer = kafkaListenerEndpointRegistry.getListenerContainer("milek11");
+            for (MessageListenerContainer messageListenerContainer : kafkaListenerEndpointRegistry.allListenerContainers) {
+                System.out.println(messageListenerContainer.toString());
+            }
+
+            for (MessageListenerContainer messageListenerContainer : kafkaListenerEndpointRegistry.listenerContainers) {
+                System.out.println(messageListenerContainer.toString());
+            }
 
             kafkaTemplate.send("student-topic", "test message 111");
             CountDownLatch countDownLatch = new CountDownLatch(1)
             countDownLatch.await(3, TimeUnit.SECONDS)
         then:
-            consumerFactory.getListeners().forEach(listener -> {System.out.println(listener.toString())})
+            consumerFactory.getListeners().forEach(listener -> { System.out.println(listener.toString()) })
 
             verify(students, times(1)).saveStudent(isA(String.class));
     }

@@ -12,11 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.util.backoff.FixedBackOff;
@@ -27,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import static java.lang.String.format;
 
+/*@EnableKafka*/
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
@@ -42,16 +45,22 @@ public class KafkaConfig {
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);  <------ to sobie zazwyczaj w osobnym @Bean ustawiamy
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class); <------ to sobie zazwyczaj w osobnym @Bean ustawiamy
         configProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");*/
-        return new DefaultKafkaConsumerFactory<>(kafkaProperties.buildConsumerProperties());
+        DefaultKafkaConsumerFactory<String, String> defaultKafkaConsumerFactory = new DefaultKafkaConsumerFactory<>(
+                kafkaProperties.buildConsumerProperties());
+        return defaultKafkaConsumerFactory;
     }
 
-    @Bean
+    // @Bean(name = "greetingKafkaListenerContainerFactory")
+    @Bean(name = "kafkaListenerContainerFactory")   // <------ dzieki tej nazwie wezmie to factory a nie factory z Autoconfigu bo w KafkaAutoConfiguration -> @Import -> KafkaAnnotationDrivenConfiguration mamy
+    //@ConditionalOnMissingBean(name = "kafkaListenerContainerFactory")
+    //	ConcurrentKafkaListenerContainerFactory<?, ?> kafkaListenerContainerFactory(
+    //w przeciwnym razie wezmie wlasnie z deafolta factory
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(KafkaTemplate<String, String> kafkaTemplate) {
         ConcurrentKafkaListenerContainerFactory<String, String> listenerContainerFactory = new ConcurrentKafkaListenerContainerFactory<>();
         listenerContainerFactory.setConsumerFactory(consumerFactory());
-
         SeekToCurrentErrorHandler errorHandler = new SeekToCurrentErrorHandler(deadLetterPublishingRecoverer(kafkaTemplate), new FixedBackOff(2000L, 1));
         listenerContainerFactory.setErrorHandler(errorHandler);
+        listenerContainerFactory.setConcurrency(6);
         return listenerContainerFactory;
     }
 

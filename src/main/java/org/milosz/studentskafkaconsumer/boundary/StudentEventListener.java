@@ -11,13 +11,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component
+/*@Component*/
 @RequiredArgsConstructor
 public class StudentEventListener {
 
     private final Students students;
 
-    @KafkaListener(autoStartup = "true",topics = "student-topic", groupId = "groupId4"/*, containerFactory = "kafkaListenerContainerFactory111111"*/)
+    @KafkaListener(id = "milek11",autoStartup = "true",topics = "student-topic", groupId = "groupId4"/*, containerFactory = "greetingKafkaListenerContainerFactory"*/)
     public void handleStudentEvent(/*@Payload StudentCreatedEvent studentCreatedEvent*/@Payload String studentCreatedEvent) {
         log.info("Ala ma kota i szedl grzes przez wies");
         students.saveStudent(studentCreatedEvent);
