@@ -32,5 +32,6 @@ class KafkaTestContainer extends Specification {
     static void properties(DynamicPropertyRegistry registry) {
         registry.add("spring.kafka.producer.bootstrap-servers", () -> kafkaContainer.getBootstrapServers())
         registry.add("spring.kafka.consumer.bootstrap-servers", () -> kafkaContainer.getBootstrapServers())
+        //System.setProperty("spring.kafka.consumer.bootstrap-servers", kafkaContainer.getBootstrapServers());
     }
 }

@@ -21,14 +21,22 @@ public class StudentEventListener {
     public void handleStudentEvent(/*@Payload StudentCreatedEvent studentCreatedEvent*/@Payload String studentCreatedEvent) {
         log.info("Ala ma kota i szedl grzes przez wies");
         students.saveStudent(studentCreatedEvent);
-/*        throw new RuntimeException("exception 123456");*/
+        throw new RuntimeException("exception 123456");
     }
 
-    @KafkaListener(id = "kasia22",autoStartup = "true",topics = "student-topic", groupId = "groupId3"/*, containerFactory = "greetingKafkaListenerContainerFactory"*/)
-    public void handleStudentEvent2(/*@Payload StudentCreatedEvent studentCreatedEvent*/@Payload String studentCreatedEvent) {
+/*
+    @KafkaListener(id = "kasia22",autoStartup = "true",topics = "student-topic", groupId = "groupId3"*/
+/*, containerFactory = "greetingKafkaListenerContainerFactory"*//*
+)
+    public void handleStudentEvent2(*/
+/*@Payload StudentCreatedEvent studentCreatedEvent*//*
+@Payload String studentCreatedEvent) {
         log.info("Ala ma kota i szedl grzes przez wies");
         students.saveStudent(studentCreatedEvent);
-        /*        throw new RuntimeException("exception 123456");*/
+        */
+/*        throw new RuntimeException("exception 123456");*//*
+
     }
+*/
 
 }

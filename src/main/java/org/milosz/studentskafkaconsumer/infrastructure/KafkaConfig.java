@@ -51,7 +51,7 @@ public class KafkaConfig {
     }
 
     // @Bean(name = "greetingKafkaListenerContainerFactory")
-    @Bean/*(name = "kafkaListenerContainerFactory") */  // <------ dzieki tej nazwie wezmie to factory a nie factory z Autoconfigu bo w KafkaAutoConfiguration -> @Import -> KafkaAnnotationDrivenConfiguration mamy
+    @Bean(name = "kafkaListenerContainerFactory")   // <------ dzieki tej nazwie wezmie to factory a nie factory z Autoconfigu bo w KafkaAutoConfiguration -> @Import -> KafkaAnnotationDrivenConfiguration mamy
     //@ConditionalOnMissingBean(name = "kafkaListenerContainerFactory")
     //	ConcurrentKafkaListenerContainerFactory<?, ?> kafkaListenerContainerFactory(
     //w przeciwnym razie wezmie wlasnie z deafolta factory
@@ -60,7 +60,7 @@ public class KafkaConfig {
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(KafkaTemplate<String, String> kafkaTemplate) {
         ConcurrentKafkaListenerContainerFactory<String, String> listenerContainerFactory = new ConcurrentKafkaListenerContainerFactory<>();
         listenerContainerFactory.setConsumerFactory(consumerFactory());
-        SeekToCurrentErrorHandler errorHandler = new SeekToCurrentErrorHandler(deadLetterPublishingRecoverer(kafkaTemplate), new FixedBackOff(2000L, 1));
+        SeekToCurrentErrorHandler errorHandler = new SeekToCurrentErrorHandler(deadLetterPublishingRecoverer(kafkaTemplate), new FixedBackOff(1000L, 1));
         listenerContainerFactory.setErrorHandler(errorHandler);
         listenerContainerFactory.setConcurrency(6);
         return listenerContainerFactory;
