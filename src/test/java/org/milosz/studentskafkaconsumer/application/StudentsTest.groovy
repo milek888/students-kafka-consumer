@@ -54,11 +54,6 @@ class StudentsTest extends KafkaTestContainer {
     @Autowired
     KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry;
 
-    @Autowired
-    ConcurrentKafkaListenerContainerFactory<String, String> concurrentKafkaListenerContainerFactory;
-
-    Consumer<String, String> kafkaConsumer;
-
 /*    @SpyBean*/
     @Autowired
     StudentEventListener eventListener;
@@ -73,20 +68,11 @@ class StudentsTest extends KafkaTestContainer {
                 ContainerTestUtils.waitForAssignment(messageListenerContainer, 1);
             } // <------ to jest potrzebne zeby test zadzialal
             String test = 'sssss'
-            //Arrays.stream(applicationContext.getBeanDefinitionNames()).forEach(System.out::println)
         when:
-/*            Map<String, Object> consumerProps = new HashMap<>(KafkaTestUtils.);
-            kafkaConsumer = new DefaultKafkaConsumerFactory(consumerProps);*/
-            /*   Consumer kafkaConsumer = consumerFactory.createConsumer();*/
-
-            ConcurrentMessageListenerContainer concurrentMessageListenerContainer = kafkaListenerEndpointRegistry.getListenerContainer("milek11");
-            for (MessageListenerContainer messageListenerContainer : kafkaListenerEndpointRegistry.allListenerContainers) {
-                System.out.println(messageListenerContainer.toString());
-            }
-
-            for (MessageListenerContainer messageListenerContainer : kafkaListenerEndpointRegistry.listenerContainers) {
-                System.out.println(messageListenerContainer.toString());
-            }
+           /* Map<String, Object> consumerProps = new HashMap<>(KafkaTestUtils.consumerProps(System.getenv("spring.kafka.consumer.bootstrap-servers"), "2", "false"));
+            kafkaConsumer = new DefaultKafkaConsumerFactory(consumerProps);
+            Consumer kafkaConsumer = consumerFactory.createConsumer();
+            kafkaConsumer.seek()*/
 
             kafkaTemplate.send("student-topic", "test message 111");
             CountDownLatch countDownLatch = new CountDownLatch(1)
